@@ -30,7 +30,7 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: '1.18'
-      - uses: imjasonh/setup-ko@v0.4
+      - uses: imjasonh/setup-ko@v0.6
 
       # checking out the project code on the current workspace
       - uses: actions/checkout@v3
