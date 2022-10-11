@@ -24,7 +24,7 @@ jobs:
         with:
           go-version: '1.18'
       # ko is a dependency to deploy the build controller instance
-      - uses: imjasonh/setup-ko@v0.4
+      - uses: imjasonh/setup-ko@v0.6
 
       # setting up Shipwright Build Controller, CLI and a Container Registry
       - uses: shipwright-io/setup@v0
