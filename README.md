@@ -1,4 +1,4 @@
-# Setup [Shipwright][shpGitHubOrg] (`v0`)
+# Setup [Shipwright][shpGitHubOrg] (`v1`)
 
 [![Build][useActionBadgeSVG]][useAction]
 
@@ -27,7 +27,7 @@ jobs:
       - uses: imjasonh/setup-ko@v0.6
 
       # setting up Shipwright Build Controller, CLI and a Container Registry
-      - uses: shipwright-io/setup@v0
+      - uses: shipwright-io/setup@v1
 ```
 
 ### Inputs
@@ -38,7 +38,7 @@ Example usage using defaults:
 jobs:
   use-action:
     steps:
-      - uses: shipwright-io/setup@v0
+      - uses: shipwright-io/setup@v1
         with:
           tekton-version: v0.38.3
           shipwright-ref: v0.11.0
@@ -51,9 +51,9 @@ The inputs are described below:
 
 | Input               | Default   | Description                                                   |
 |---------------------|-----------|---------------------------------------------------------------|
-| `tekton-version`    | `v0.37.0` | [Tekton Pipeline][tektonPipeline] release version             |
-| `shipwright-ref`    | `v0.10.0` | [Shipwright Build Controller][shpBuild] repository tag or SHA |
-| `cli-ref`           | `v0.10.0` | [Shipwright CLI][shpCLI] repository tag or SHA                |
+| `tekton-version`    | `v0.38.3` | [Tekton Pipeline][tektonPipeline] release version             |
+| `shipwright-ref`    | `v0.11.0` | [Shipwright Build Controller][shpBuild] repository tag or SHA |
+| `cli-ref`           | `v0.11.0` | [Shipwright CLI][shpCLI] repository tag or SHA                |
 | `kind-cluster-name` | `kind`    | KinD cluster name                                             |
 | `setup-registry`    | `true`    | Setup a Container Registry instance (`true` or `false`)       |
 
