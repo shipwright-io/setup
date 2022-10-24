@@ -8,15 +8,15 @@ inputs:
   tekton-version:
     description: Tekton Pipelines release version
     required: false
-    default: v0.37.0
+    default: v0.38.3
   shipwright-ref:
     description: Shipwright Build Controller repository reference, tag or SHA
     required: false
-    default: v0.10.0
+    default: v0.11.0
   cli-ref:
     description: Shipwright CLI repository reference, tag or SHA
     required: false
-    default: v0.10.0
+    default: v0.11.0
   kind-cluster-name:
     description: KinD cluster name, by default "kind"
     required: false

@@ -40,9 +40,9 @@ jobs:
     steps:
       - uses: shipwright-io/setup@v0
         with:
-          tekton-version: v0.37.0
-          shipwright-ref: v0.10.0
-          cli-ref: v0.10.0
+          tekton-version: v0.38.3
+          shipwright-ref: v0.11.0
+          cli-ref: v0.11.0
           kind-cluster-name: kind
           setup-registry: true
 ```
