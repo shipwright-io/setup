@@ -1,0 +1,30 @@
+---
+name: release
+
+on:
+  push:
+    tags-ignore:
+      - '**'
+    paths-ignore:
+      - '**.md'
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository == 'shipwright-io/setup' }}
+    env:
+      VERSION: "1"
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: git-configuration
+        run: |
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+
+      - name: release-action
+        working-directory: ${{ github.action_path }}
+        run: |
+          eval "$(./hack/release.sh)"
