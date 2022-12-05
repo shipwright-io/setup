@@ -21,7 +21,7 @@ git fetch --tags
 echo "# Preparing release for '${MAJOR_TAG}' (major)..."
 
 # checking if there are mnior release tags, based on the major release
-LAST_TAG="$(git tag --list --sort=v:refname | grep "${MAJOR_TAG}." | tail -n 1)"
+LAST_TAG="$(git tag --list --sort=v:refname | { grep "${MAJOR_TAG}." || :; } | tail -n 1)"
 
 if [ "${LAST_TAG}" == "" ]; then
   NEXT_TAG="${MAJOR_TAG}.0"
