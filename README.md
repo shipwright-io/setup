@@ -1,4 +1,4 @@
-# Setup [Shipwright][shpGitHubOrg] (`v1`)
+# Setup [Shipwright][shpGitHubOrg] (`v2`)
 
 [![Build][useActionBadgeSVG]][useAction]
 
@@ -27,7 +27,7 @@ jobs:
       - uses: imjasonh/setup-ko@v0.6
 
       # setting up Shipwright Build Controller, CLI and a Container Registry
-      - uses: shipwright-io/setup@v1
+      - uses: shipwright-io/setup@v2
 ```
 
 ### Inputs
@@ -38,7 +38,7 @@ Example usage using defaults:
 jobs:
   use-action:
     steps:
-      - uses: shipwright-io/setup@v1
+      - uses: shipwright-io/setup@v2
         with:
           tekton-version: v0.38.3
           shipwright-ref: v0.11.0
@@ -71,7 +71,7 @@ By default the action execute a checkout of the Build and CLI repositories, howe
 jobs:
   use-action:
     steps:
-      - uses: shipwright-io/setup@v1
+      - uses: shipwright-io/setup@v2
         with:
           shipwright-ref: _ignore
           cli-ref: _ignore
