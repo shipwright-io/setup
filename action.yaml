@@ -3,77 +3,63 @@ name: Shipwright Setup (CI)
 description: Installs Shipwright Build Controller, CLI and Container Registry
 branding:
   color: blue
-  icon: anchor 
+  icon: anchor
 inputs:
-  tekton-version:
+  pipeline_version:
     description: Tekton Pipelines release version
     required: false
-    default: v0.38.3
-  shipwright-ref:
+    default: latest
+  feature_flags:
+    description: |
+      JSON payload for the Tekton Pipelines feature-flags, a configmap containing features toggles.
+      For instance '{ "enable-custom-tasks": "true" }'.
+    required: false
+    default: '{}'
+  shipwright_ref:
     description: Shipwright Build Controller repository reference, tag or SHA
     required: false
     default: v0.11.0
-  cli-ref:
+  cli_ref:
     description: Shipwright CLI repository reference, tag or SHA
     required: false
     default: v0.11.0
-  kind-cluster-name:
-    description: KinD cluster name, by default "kind"
-    required: false
-    default: kind
-  setup-registry:
+  setup_registry:
     description: When enabled, the action deploys a Container Registry instance
     required: true
     default: "true"
-  registry-hostname:
+  registry_hostname:
     description: Container Registry hostname inside KinD
     required: true
     default: registry.registry.svc.cluster.local
-  patch-etc-hosts:
+  patch_etc_hosts:
     description: Patch "/etc/hosts" to alias the Container Registry hostname to "127.0.0.1"
     required: true
     default: "true"
 runs:
   using: composite
   steps:
+    - uses: openshift-pipelines/setup-tektoncd@v1
+      with:
+        pipeline_version: ${{ inputs.pipeline_version }}
+        feature_flags:  ${{ inputs.feature_flags }}
+        cli_version: latest
+        setup_registry: ${{ inputs.setup_registry }}
+        patch_etc_hosts: ${{ inputs.patch_etc_hosts }}
+
     # pre-flight checks, making sure the dependencies needed for the upcoming steps are available
     - shell: bash
       working-directory: ${{ github.action_path }}
       run: ./probe.sh
-
-    # deploying the container registry when input flag is set, waiting for the deployment to reach
-    # ready status before proceeding
-    - shell: bash
-      if: ${{ inputs.setup-registry == 'true' }}
-      working-directory: ${{ github.action_path }}
-      run: ./install-registry.sh
-
-    # deploying tekton pipline controller and dependencies, waiting for it to reach ready status
-    - shell: bash
-      env:
-        TEKTON_VERSION: ${{ inputs.tekton-version }}
-      working-directory: ${{ github.action_path }}
-      run: ./install-tekton.sh
-
-    # patches the /etc/hosts to include the container registry hostname resolving to 127.0.0.1
-    - shell: bash
-      if: ${{ inputs.patch-etc-hosts == 'true' }}
-      env:
-        REGISTRY_HOSTNAME: ${{ inputs.registry-hostname }}
-      working-directory: ${{ github.action_path }}
-      run: sudo ./patch-etc-hosts.sh
 
     # checking out the build controller project locally to perform the rollout and inspection of the
     # controller instance in the cluster
     - uses: actions/checkout@v3
       with:
         repository: shipwright-io/build
-        ref: ${{ inputs.shipwright-ref }}
+        ref: ${{ inputs.shipwright_ref }}
         path: src/build
-      if: ${{ inputs.shipwright-ref != '_ignore' }}
+      if: ${{ inputs.shipwright_ref != '_ignore' }}
     - shell: bash
-      env:
-        KIND_CLUSTER_NAME: ${{ inputs.kind-cluster-name }}
       working-directory: ${{ github.action_path }}
       if: ${{ inputs.shipwright-ref != '_ignore' }}
       run: ./install-shipwright.sh
@@ -82,10 +68,10 @@ runs:
     - uses: actions/checkout@v3
       with:
         repository: shipwright-io/cli
-        ref: ${{ inputs.cli-ref }}
+        ref: ${{ inputs.cli_hef }}
         path: src/cli
-      if: ${{ inputs.cli-ref != '_ignore' }}
+      if: ${{ inputs.cli_ref != '_ignore' }}
     - shell: bash
       working-directory: ${{ github.action_path }}
-      if: ${{ inputs.cli-ref != '_ignore' }}
+      if: ${{ inputs.cli_ref != '_ignore' }}
       run: ./install-cli.sh
