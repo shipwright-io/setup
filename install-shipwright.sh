@@ -5,11 +5,6 @@
 
 set -eu -o pipefail
 
-# the install target uses ko to produce a container image out of the go project, ko loads the
-# container image directly into KinD (Kubernetes in Docker), however when using an alternative
-# cluster name it needs to be declared using KIND_CLUSTER_NAME environment variable
-KIND_CLUSTER_NAME="${KIND_CLUSTER_NAME:-}"
-
 source common.sh
 
 readonly REPO_NAME="build"
@@ -21,7 +16,7 @@ fi
 
 cd "${CLONE_DIR}" || fail "Directory '${CLONE_DIR}' does not exit!"
 
-echo "# Deploying Shipwright Controller (pwd='${CLONE_DIR}', kind='${KIND_CLUSTER_NAME}')..."
+echo "# Deploying Shipwright Controller (pwd='${CLONE_DIR}')..."
 make install-controller-kind
 
 echo "# Waiting for Build Controller rollout..."
