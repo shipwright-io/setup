@@ -1,4 +1,4 @@
-# Setup [Shipwright][shpGitHubOrg] (`v1`)
+# Setup [Shipwright][shpGitHubOrg] (`v2`)
 
 [![Build][useActionBadgeSVG]][useAction]
 
@@ -18,16 +18,18 @@ jobs:
     name: Shipwright
     steps:
       # using KinD to provide the Kubernetes instance and kubectl
-      - uses: helm/kind-action@v1.2.0
+      - uses: helm/kind-action@v1.5.0
+        with:
+          cluster_name: kind
       # golang is a required to deploy the build controller and CLI
       - uses: actions/setup-go@v3
         with:
-          go-version: '1.18'
+          go-version: '1.19.x'
       # ko is a dependency to deploy the build controller instance
       - uses: imjasonh/setup-ko@v0.6
 
       # setting up Shipwright Build Controller, CLI and a Container Registry
-      - uses: shipwright-io/setup@v1
+      - uses: shipwright-io/setup@v2
 ```
 
 ### Inputs
@@ -38,28 +40,27 @@ Example usage using defaults:
 jobs:
   use-action:
     steps:
-      - uses: shipwright-io/setup@v1
+      - uses: shipwright-io/setup@v2
         with:
-          tekton-version: v0.38.3
-          shipwright-ref: v0.11.0
-          cli-ref: v0.11.0
-          kind-cluster-name: kind
-          setup-registry: true
-          registry-hostname: registry.registry.svc.cluster.local
-          patch-etc-hosts: true
+          tekton_version: latest
+          feature_flags: '{}'
+          shipwright_ref: v0.11.0
+          cli_ref: v0.11.0
+          setup_registry: true
+          registry_hostname: registry.registry.svc.cluster.local
+          patch_etc_hosts: true
 ```
 
 The inputs are described below:
 
-| Input               | Default                               | Description                                                                |
-| ------------------- | ------------------------------------- | -------------------------------------------------------------------------- |
-| `tekton-version`    | `v0.38.3`                             | [Tekton Pipeline][tektonPipeline] release version                          |
-| `shipwright-ref`    | `v0.11.0`                             | [Shipwright Build Controller][shpBuild] repository tag or SHA              |
-| `cli-ref`           | `v0.11.0`                             | [Shipwright CLI][shpCLI] repository tag or SHA                             |
-| `kind-cluster-name` | `kind`                                | KinD cluster name                                                          |
-| `setup-registry`    | `true`                                | Setup a Container Registry instance (`true` or `false`)                    |
-| `registry-hostname` | `registry.registry.svc.cluster.local` | Container Registry hostname inside KinD                                    |
-| `patch-etc-hosts`   | `true`                                | Patch "/etc/hosts" to alias the Container Registry hostname to "127.0.0.1" |
+| Input | Default | Description |
+|:------|:-------:|:------------|
+| `pipeline_version` | `latest` | [Tekton Pipeline][tektonPipeline] release version |
+| `shipwright_ref` | `v0.11.0` | [Shipwright Build Controller][shpBuild] repository tag or SHA |
+| `cli_ref` | `v0.11.0` | [Shipwright CLI][shpCLI] repository tag or SHA |
+| `setup_registry` | `true` | Setup a Container Registry instance (`true` or `false`) |
+| `registry_hostname` | `registry.registry.svc.cluster.local` | Container Registry hostname (Kubernetes service) |
+| `patch_etc_hosts`   | `true` | Patch "/etc/hosts" with Container Registry hostname as "127.0.0.1" |
 
 The Shipwright components [Build Controller][shpBuild] and [CLI][shpCLI] can be deployed using a specific commit SHA or tag.
 
@@ -73,8 +74,8 @@ jobs:
     steps:
       - uses: shipwright-io/setup@v1
         with:
-          shipwright-ref: _ignore
-          cli-ref: _ignore
+          shipwright_ref: _ignore
+          cli_ref: _ignore
 ```
 
 ## Contributing
@@ -82,7 +83,7 @@ jobs:
 To run this action locally, you can use [`act`][nektosAct] as the following example:
 
 ```bash
-act --secret="GITHUB_TOKEN=${GITHUB_TOKEN}"
+act --rm --secret="GITHUB_TOKEN=${GITHUB_TOKEN}" --workflows=".github/workflows/use-action.yaml"
 ```
 
 The `GITHUB_TOKEN` is necessary for checking out the upstream repositories in the action workspace, and for this purpose the token only needs read-only permissions on the [`shipwright-io` organization][shpGitHubOrg]. The token is provided by default during GitHub Action execution inside GitHub.
